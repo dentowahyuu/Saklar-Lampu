@@ -9,12 +9,7 @@ pipeline {
     }
 
     stages {
-            stage('Checkout') {
-                steps {
-                    deleteDir()
-                    checkout([$class: 'GitSCM', branches: [[name: 'master']], userRemoteConfigs: [[url: 'https://github.com/dentowahyuu/Saklar-Lampu.git']]])
-                }
-            }
+            
 
             stage('Build Docker Image') {
             steps {
