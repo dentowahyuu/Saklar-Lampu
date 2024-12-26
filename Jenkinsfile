@@ -20,11 +20,11 @@ pipeline {
             steps {
                 script {
                     // Check and remove existing container if it exists
-                    sh """
-                    if [ \$(docker ps -aq -f name=${CONTAINER_NAME}) ]; then
-                        docker stop ${CONTAINER_NAME} || true
-                        docker rm ${CONTAINER_NAME} || true
-                    fi
+                    bat """
+                    FOR /F "tokens=*" %%i IN ('docker ps -aq -f name=${CONTAINER_NAME}') DO (
+                        docker stop %%i || echo "No running container"
+                        docker rm %%i || echo "No container to remove"
+                    )
                     """
                 }
             }
