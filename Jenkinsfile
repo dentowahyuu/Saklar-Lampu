@@ -1,4 +1,3 @@
-pipeline 
 pipeline {
     agent any
 
@@ -9,18 +8,27 @@ pipeline {
     }
 
     stages {
-            
-
-            stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                        docker.build("${DOCKER_IMAGE}",'-f Dockerfile .')
+                    docker.build("${DOCKER_IMAGE}", '-f Dockerfile .')
                 }
             }
         }
 
-        
-
+        stage('Clean Existing Container') {
+            steps {
+                script {
+                    // Check and remove existing container if it exists
+                    sh """
+                    if [ \$(docker ps -aq -f name=${CONTAINER_NAME}) ]; then
+                        docker stop ${CONTAINER_NAME} || true
+                        docker rm ${CONTAINER_NAME} || true
+                    fi
+                    """
+                }
+            }
+        }
 
         stage('Run Docker Container') {
             steps {
@@ -31,6 +39,4 @@ pipeline {
             }
         }
     }
-
-    
 }
